@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/Allobos/clean-react/issues"
   },
-  "homepage": "https://github.com/Allobos/clean-react#readme"
+  "homepage": "https://github.com/Allobos/clean-react#readme",
+  "devDependencies": {
+    "git-commit-msg-linter": "^3.0.0"
+  }
 }
