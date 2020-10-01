@@ -1,4 +1,4 @@
-import { AuthenticationParams } from 'domain/usecases/authentication'
+import { AuthenticationParams } from '@/domain/usecases/authentication'
 import faker from 'faker'
 
 // factory para gerar um Authentication fake
