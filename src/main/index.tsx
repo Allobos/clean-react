@@ -1,8 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Login } from '@/presentation/pages'
+import { Router } from '@/presentation/components'
 
+// Router é o componente inicial do nosso projeto
 ReactDOM.render(
-  <Login />,
+  <Router />,
   document.getElementById('main')
 )
