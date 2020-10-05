@@ -6,10 +6,19 @@ import Styles from './input-styles.scss'
 type Props = React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
 
 const Input: React.FC<Props> = (props: Props) => {
+  // Hackzinho para bloquear o autocomplete do Chrome capturando o evento do onFocus do input
+  const enableInput = (event: React.FocusEvent<HTMLInputElement>): void => {
+    event.target.readOnly = false
+  }
+
   return (
     <div className={Styles.inputWrap}>
       {/* <input type="email" name="email" placeholder="Digite seu e-mail" /> */}
-      <input {...props} />
+      {/*
+          Para rodar o Hackzinho, precisa colocar o input como readOnly e
+          e atribuir o hackzinho no onFocus do input
+      */}
+      <input {...props} readOnly onFocus={enableInput} />
       <span className={Styles.status}></span>
     </div>
   )
