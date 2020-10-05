@@ -60,27 +60,6 @@ button {
     font-size: 20px;
     text-transform: uppercase;
   }
-
-  .inputWrap {
-    margin-top: 16px;
-    display: flex;
-    position: relative;
-    align-items: center;
-
-    input {
-      flex-grow: 1;
-    }
-
-    .status {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background-image: radial-gradient(#FF0000, $white);
-      position: absolute;
-      right: 8px;
-      cursor: help;
-    }
-  }
 }
 
 .submit {
