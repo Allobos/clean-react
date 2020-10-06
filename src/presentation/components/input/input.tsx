@@ -12,7 +12,7 @@ const Input: React.FC<Props> = (props: Props) => {
   // Hackzinho para bloquear o autocomplete do Chrome capturando o evento do onFocus do input
   const enableInput = (event: React.FocusEvent<HTMLInputElement>): void => {
     event.target.readOnly = false
-  }
+  } // Hackzinho
   const handleChange = (event: React.FocusEvent<HTMLInputElement>): void => {
     setState({
       ...state,
