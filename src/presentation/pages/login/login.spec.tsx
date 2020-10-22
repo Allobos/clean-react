@@ -10,10 +10,13 @@ type SutTypes = {
 
 class ValidationSpy implements Validation {
   errorMessage: string
-  input: object
+  fieldName: string
+  fieldValue: string
 
-  validate (input: object): string {
-    this.input = input
+  validate (fieldName: string, fieldValue: string): string {
+  // validate (input: object): string {
+    this.fieldName = fieldName
+    this.fieldValue = fieldValue
     return this.errorMessage
   }
 }
@@ -30,6 +33,7 @@ const makeSut = (): SutTypes => {
 
 describe('Login Component', () => {
   afterEach(cleanup) // garante que qualquer alteração no render(<Login />) de um teste não afete o teste de baixo
+
   test('Should start with initial state', () => {
     const { sut } = makeSut()
     const errorWrap = sut.getByTestId('error-wrap')
@@ -38,29 +42,25 @@ describe('Login Component', () => {
     expect(submitButton.disabled).toBe(true)
     const emailStatus = sut.getByTestId('email-status')
     expect(emailStatus.title).toBe('Campo obrigatório')
-    // expect(emailStatus.textContent).toBe('bolinha vermelha')
-    expect(emailStatus.textContent).toBe('O')
+    expect(emailStatus.textContent).toBe('🔴')
     const passwordStatus = sut.getByTestId('password-status')
     expect(passwordStatus.title).toBe('Campo obrigatório')
-    // expect(passwordStatus.textContent).toBe('bolinha vermelha')
-    expect(passwordStatus.textContent).toBe('O')
+    expect(passwordStatus.textContent).toBe('🔴')
   })
 
   test('Should call Validation with correct email', () => {
     const { sut, validationSpy } = makeSut()
     const emailInput = sut.getByTestId('email')
     fireEvent.input(emailInput, { target: { value: 'any_email' } }) // popula o input com 'any_email'
-    expect(validationSpy.input).toEqual({
-      email: 'any_email' // o validation saberá é válido ou não
-    })
+    expect(validationSpy.fieldName).toBe('email')
+    expect(validationSpy.fieldValue).toBe('any_email')
   })
 
   test('Should call Validation with correct password', () => {
     const { sut, validationSpy } = makeSut()
     const passwordInput = sut.getByTestId('password')
     fireEvent.input(passwordInput, { target: { value: 'any_password' } }) // popula o input com 'any_email'
-    expect(validationSpy.input).toEqual({
-      password: 'any_password' // o validation saberá é válido ou não
-    })
+    expect(validationSpy.fieldName).toBe('password')
+    expect(validationSpy.fieldValue).toBe('any_password')
   })
 })
