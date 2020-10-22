@@ -29,21 +29,14 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
       emailError: validation.validate('email', state.email),
       passwordError: validation.validate('password', state.password)
     })
-    // validation.validate('email', state.email) // professor (passa nos testes mas não renderiza)
-    // if (validation) {
-    // validate(state.email) // comentar do professor e manter esse para renderizar (não passa nos testes)
-    // validate({ email: state.email })
-    // }
   }, [state.email, state.password])
-  /*
-  useEffect(() => {
-    // validation.validate('password', state.password) // professor (passa nos testes mas não renderiza)
-    // validate(state.password) // comentar do professor e manter esse para renderizar (não passa nos testes)
-  }, [state.password])
-  */
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault() // evita o comportamento padrão do formulário
+    // evita o submit ser chamado mais de uma vez por cliques consecutivos
+    if (state.isLoading) {
+      return
+    }
     setState({ ...state, isLoading: true })
     await authentication.auth({
       email: state.email,
