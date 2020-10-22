@@ -31,15 +31,23 @@ const Login: React.FC<Props> = ({ validation, authentication }: Props) => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault() // evita o comportamento padrão do formulário
-    // evita o submit ser chamado mais de uma vez por cliques consecutivos
-    if (state.isLoading || state.emailError || state.passwordError) {
-      return
+    try {
+      // evita o submit ser chamado mais de uma vez por cliques consecutivos
+      if (state.isLoading || state.emailError || state.passwordError) {
+        return
+      }
+      setState({ ...state, isLoading: true })
+      await authentication.auth({
+        email: state.email,
+        password: state.password
+      })
+    } catch (error) {
+      setState({
+        ...state,
+        isLoading: false,
+        mainError: error.message
+      })
     }
-    setState({ ...state, isLoading: true })
-    await authentication.auth({
-      email: state.email,
-      password: state.password
-    })
   }
 
   return (
