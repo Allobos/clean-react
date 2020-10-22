@@ -14,16 +14,19 @@ const Login: React.FC<Props> = ({ validation }: Props) => {
     isLoading: false,
     email: '',
     password: '',
-    emailError: 'Campo obrigatório',
+    emailError: '',
     passwordError: 'Campo obrigatório',
     mainError: ''
   })
-  console.log('Quem é validation?', validation)
   const validate = (input: string): void => {
     console.log('FUI CHAMADOOOO')
   }
   useEffect(() => {
-    validation.validate('email', state.email) // professor (passa nos testes mas não renderiza)
+    setState({
+      ...state,
+      emailError: validation.validate('email', state.email)
+    })
+    // validation.validate('email', state.email) // professor (passa nos testes mas não renderiza)
     // if (validation) {
     // validate(state.email) // comentar do professor e manter esse para renderizar (não passa nos testes)
     // validate({ email: state.email })
