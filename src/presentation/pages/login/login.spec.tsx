@@ -1,4 +1,6 @@
 import React from 'react'
+import { Router } from 'react-router-dom'
+import { createMemoryHistory } from 'history'
 import faker from 'faker'
 import 'jest-localstorage-mock'
 import { render, RenderResult, fireEvent, cleanup, waitFor } from '@testing-library/react'
@@ -15,12 +17,18 @@ type SutParams = {
   validationError: string
 }
 
+const history = createMemoryHistory()
+
 // factory method
 const makeSut = (params?: SutParams): SutTypes => {
   const validationStub = new ValidationStub()
   const authenticationSpy = new AuthenticationSpy()
   validationStub.errorMessage = params?.validationError // se não for passado o valor será nulo indicando que não tem erro
-  const sut = render(<Login validation={validationStub} authentication={authenticationSpy} />)
+  const sut = render(
+    <Router history={history}>
+      <Login validation={validationStub} authentication={authenticationSpy} />
+    </Router>
+  )
   return {
     sut,
     authenticationSpy
@@ -156,4 +164,16 @@ describe('Login Component', () => {
     await waitFor(() => sut.getByTestId('form'))
     expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', authenticationSpy.account.accessToken)
   })
+
+  test('Should go to signup page', () => {
+    const { sut } = makeSut()
+    const register = sut.getByTestId('signup')
+    // ao clicar nesse elemento
+    fireEvent.click(register)
+    // console.log(history)
+    expect(history.length).toBe(2)
+    expect(history.location.pathname).toBe('/signup')
+  })
 })
+
+// para rodar somente 1 teste, ao invés de test(...) usar test.only(...)
