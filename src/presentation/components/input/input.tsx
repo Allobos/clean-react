@@ -20,10 +20,10 @@ const Input: React.FC<Props> = (props: Props) => {
     })
   }
   const getStatus = (): string => {
-    return '🔴'
+    return error ? '🔴' : '🟢'
   }
   const getTitle = (): string => {
-    return error
+    return error || 'Tudo certo!' // SE tem error mostra error SENÃO mostra 'Tudo certo!'
   }
 
   return (
