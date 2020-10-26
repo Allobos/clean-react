@@ -139,4 +139,14 @@ describe('SignUp Component', () => {
       passwordConfirmation: password
     })
   })
+
+  // se fizermos um submit válido duas vezes, espero que o addAccountSpy.callsCount seja 1 - não pode ser chamado duas vezes
+  test('Should call AddAccount only once', async () => {
+    const { sut, addAccountSpy } = makeSut()
+    // simula dois cliques no submit
+    await simulateValidSubmit(sut)
+    await simulateValidSubmit(sut)
+    // espero que só chame 1 vez o Authentication
+    expect(addAccountSpy.callsCount).toBe(1)
+  })
 })
