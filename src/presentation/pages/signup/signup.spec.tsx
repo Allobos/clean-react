@@ -196,4 +196,15 @@ describe('SignUp Component', () => {
     Helper.testElementText(sut, 'main-error', error.message)
     Helper.testChildCount(sut, 'error-wrap', 1)
   })
+
+  // link para voltar para a tela do login
+  test('Should go to login page', () => {
+    const { sut } = makeSut()
+    const loginLink = sut.getByTestId('login-link')
+    // ao clicar nesse elemento
+    fireEvent.click(loginLink)
+    // console.log(history)
+    expect(history.length).toBe(1)
+    expect(history.location.pathname).toBe('/login')
+  })
 })
