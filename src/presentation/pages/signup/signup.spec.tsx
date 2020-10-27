@@ -149,4 +149,11 @@ describe('SignUp Component', () => {
     // espero que só chame 1 vez o Authentication
     expect(addAccountSpy.callsCount).toBe(1)
   })
+  // garantir que o AddAccount não vai ser chamado se o form estiver inválido, ou seja, caso o usuário de um enter no formulário e tiver algum campo inválido
+  test('Should not call AddAccount if form is invalid', async () => {
+    const validationError = faker.random.words()
+    const { sut, addAccountSpy } = makeSut({ validationError })
+    await simulateValidSubmit(sut)
+    expect(addAccountSpy.callsCount).toBe(0)
+  })
 })
