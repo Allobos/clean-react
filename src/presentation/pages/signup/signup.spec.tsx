@@ -186,4 +186,14 @@ describe('SignUp Component', () => {
     expect(history.length).toBe(1)
     expect(history.location.pathname).toBe('/') // tem que ser redirecionado para a próxima tela. Assim como no login, o cadastro tendo sucesso a gente loga no usuário
   })
+
+  // caso de erro - se o SaveaccessToken falhar a gente tem que mostrar um erro (tanto faz o erro aqui no teste)
+  test('Should present error if SaveAccessToken fails', async () => {
+    const { sut, saveAccessTokenMock } = makeSut()
+    const error = new EmailInUseError()
+    jest.spyOn(saveAccessTokenMock, 'save').mockRejectedValueOnce(error)
+    await simulateValidSubmit(sut)
+    Helper.testElementText(sut, 'main-error', error.message)
+    Helper.testChildCount(sut, 'error-wrap', 1)
+  })
 })
