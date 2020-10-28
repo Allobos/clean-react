@@ -1,4 +1,7 @@
+import { should } from 'chai'
 import faker from 'faker'
+
+const baseUrl: string = Cypress.config().baseUrl
 
 describe('Login', () => {
   beforeEach(() => {
@@ -44,5 +47,19 @@ describe('Login', () => {
       .should('contain.text', '🟢')
     cy.getByTestId('submit').should('not.have.attr', 'disabled') // o botão (submit) não pode mais ter o atributo disabled
     cy.getByTestId('error-wrap').should('not.have.descendants') // não é para mostrar loading, só alteramos os campos mas ainda não demos submit
+  })
+
+  // caso de erro - fazer a requisição, clicar no botão e esperar alguma coisa
+  it('Shuld present error if invalid credentials are provided', () => {
+    cy.getByTestId('email').focus().type(faker.internet.email()) // se eu digitar um email correto
+    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
+    cy.getByTestId('submit').click() // ao clicar no botão...
+    cy.getByTestId('error-wrap') // caso de erro
+      .getByTestId('spinner').should('exist') // ...tem que ter o spinner...
+      .getByTestId('main-error').should('not.exist') // ...e não pode existir o main-error
+      .getByTestId('spinner').should('not.exist') // após a requisição, o spinner não existe...
+      .getByTestId('main-error').should('exist') // ...e o main-error tem que existir
+      .getByTestId('main-error').should('contain.text', 'Credenciais inválidas') // testa credenciais inválidas
+    cy.url().should('eq', `${baseUrl}/login`) // se der erro, espero que não mude (seja equal - igual - ao baseUrl) a URL
   })
 })
