@@ -62,4 +62,17 @@ describe('Login', () => {
       .getByTestId('main-error').should('contain.text', 'Credenciais inválidas') // testa credenciais inválidas
     cy.url().should('eq', `${baseUrl}/login`) // se der erro, espero que não mude (seja equal - igual - ao baseUrl) a URL
   })
+
+  // caso de sucesso
+  it('Shuld present save accessToken if valid credentials are provided', () => {
+    cy.getByTestId('email').focus().type('mango@gmail.com')
+    cy.getByTestId('password').focus().type('12345')
+    cy.getByTestId('submit').click()
+    cy.getByTestId('error-wrap')
+      .getByTestId('spinner').should('exist')
+      .getByTestId('main-error').should('not.exist')
+      .getByTestId('spinner').should('not.exist')
+    cy.url().should('eq', `${baseUrl}/`) // vai mudar de URL
+    cy.window().then(window => assert.isOk(window.localStorage.getItem('accessToken'))) // testa que tem que ter um acessToken setado no localStorage
+  })
 })
