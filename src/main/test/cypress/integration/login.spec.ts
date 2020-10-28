@@ -31,4 +31,18 @@ describe('Login', () => {
     cy.getByTestId('submit').should('have.attr', 'disabled') // espero que o botão esteja desabilitado
     cy.getByTestId('error-wrap').should('not.have.descendants') // espero que não tenha elemento filho, ou seja não mostra o loading e nem mensagem de erro
   })
+
+  // caso de sucesso
+  it('Shuld present valid state if form is valid', () => {
+    cy.getByTestId('email').focus().type(faker.internet.email()) // se eu digitar um email correto
+    cy.getByTestId('email-status')
+      .should('have.attr', 'title', 'Tudo certo!') // espero que o status dele fique 'Tudo certo!'
+      .should('contain.text', '🟢')
+    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
+    cy.getByTestId('password-status')
+      .should('have.attr', 'title', 'Tudo certo!')
+      .should('contain.text', '🟢')
+    cy.getByTestId('submit').should('not.have.attr', 'disabled') // o botão (submit) não pode mais ter o atributo disabled
+    cy.getByTestId('error-wrap').should('not.have.descendants') // não é para mostrar loading, só alteramos os campos mas ainda não demos submit
+  })
 })
