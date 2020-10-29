@@ -8,7 +8,7 @@ describe('Login', () => {
     cy.server() // servidor do cypress para mockar valores
     cy.visit('login')
   })
-  // caso inicial - testa o estado inicial da tela de Login
+  // testa caso inicial - testa o estado inicial da tela de Login
   it('Should load with correct initial state', () => {
     cy.getByTestId('email').should('have.attr', 'readOnly') // testa se o input do email está readonly
     cy.getByTestId('email-status')
@@ -22,7 +22,7 @@ describe('Login', () => {
     cy.getByTestId('error-wrap').should('not.have.descendants') // não tem elemento filho
   })
 
-  // caso de erro - testa os campos com valores inválidos
+  // testa caso de erro - testa os campos com valores inválidos
   it('Should present error state if form is invalid', () => {
     cy.getByTestId('email').focus().type(faker.random.word()) // se eu digitar um email inválido
     cy.getByTestId('email-status')
@@ -36,7 +36,7 @@ describe('Login', () => {
     cy.getByTestId('error-wrap').should('not.have.descendants') // espero que não tenha elemento filho, ou seja não mostra o loading e nem mensagem de erro
   })
 
-  // caso de sucesso - campos com valores corretos
+  // testa caso de sucesso - campos com valores corretos
   it('Should present valid state if form is valid', () => {
     cy.getByTestId('email').focus().type(faker.internet.email()) // se eu digitar um email correto
     cy.getByTestId('email-status')
@@ -87,7 +87,25 @@ describe('Login', () => {
     cy.url().should('eq', `${baseUrl}/login`) // ...e espero que a URL não mude
   })
 
-  // caso de sucesso (200) com accessToken no localStorage
+  // testa caso de sucesso (200) mas com dados inválidos retornados
+  it('Should present UnexpectedError if invalid data is returned', () => {
+    cy.route({
+      method: 'POST',
+      url: /login/,
+      status: 200,
+      response: {
+        invalidProperty: faker.random.uuid()
+      }
+    })
+    cy.getByTestId('email').focus().type(faker.internet.email()) // se eu digitar um email correto
+    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
+    cy.getByTestId('submit').click() // ao clicar no botão...
+    cy.getByTestId('spinner').should('not.exist') // spinner não deve aparecer
+    cy.getByTestId('main-error').should('contain.text', 'Algo de errado aconteceu. Tente novamente em breve') // ... e que o main-erro tenha esteja preenchido com o texto 'Algo de errado aconteceu. Tente novamente em breve'
+    cy.url().should('eq', `${baseUrl}/login`) // deve continuar na mesma tela
+  })
+
+  // testa caso de sucesso (200) com accessToken no localStorage
   it('Should present save accessToken if valid credentials are provided', () => {
     cy.route({
       method: 'POST',
