@@ -1,5 +1,5 @@
 // não utilizamos memo porque este componente fica mudando de estado
-import React, { useContext } from 'react'
+import React, { useContext, useRef } from 'react'
 import Styles from './input-styles.scss'
 import Context from '@/presentation/contexts/form/form-context'
 
@@ -8,23 +8,8 @@ type Props = React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>
 
 const Input: React.FC<Props> = (props: Props) => {
   const { state, setState } = useContext(Context)
+  const inputRef = useRef<HTMLInputElement>()
   const error = state[`${props.name}Error`]
-  // Hackzinho para bloquear o autocomplete do Chrome capturando o evento do onFocus do input
-  const enableInput = (event: React.FocusEvent<HTMLInputElement>): void => {
-    event.target.readOnly = false
-  } // Hackzinho
-  const handleChange = (event: React.FocusEvent<HTMLInputElement>): void => {
-    setState({
-      ...state,
-      [event.target.name]: event.target.value
-    })
-  }
-  const getStatus = (): string => {
-    return error ? '🔴' : '🟢'
-  }
-  const getTitle = (): string => {
-    return error || 'Tudo certo!' // SE tem error mostra error SENÃO mostra 'Tudo certo!'
-  }
 
   return (
     <div className={Styles.inputWrap}>
@@ -33,8 +18,25 @@ const Input: React.FC<Props> = (props: Props) => {
           Para rodar o Hackzinho, precisa colocar o input como readOnly e
           e atribuir o hackzinho no onFocus do input
       */}
-      <input {...props} data-testid={props.name} readOnly onFocus={enableInput} onChange={handleChange} />
-      <span data-testid={`${props.name}-status`} title={getTitle()} className={Styles.status}>{getStatus()}</span>
+      <input
+        {...props}
+        ref={inputRef}
+        placeholder=" "
+        data-testid={props.name}
+        readOnly
+        onFocus={e => { e.target.readOnly = false }} // Hackzinho para bloquear o autocomplete do Chrome capturando o evento do onFocus do input
+        onChange={ e => { setState({ ...state, [e.target.name]: e.target.value }) }}
+      />
+      <label onClick={() => { inputRef.current.focus() }}>
+        {props.placeholder}
+      </label>
+      <span
+        data-testid={`${props.name}-status`}
+        title={error || 'Tudo certo!'} // SE tem error mostra 'Tudo certo!
+        className={Styles.status}
+      >
+        {error ? '🔴' : '🟢' /* SE tem error mostra a bolinha vermelha SENÃO mostra a bolinha verde */}
+      </span>
     </div>
   )
 }
