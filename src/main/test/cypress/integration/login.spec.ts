@@ -140,4 +140,18 @@ describe('Login', () => {
     cy.getByTestId('submit').dblclick() // clique duplo (double) no botão
     cy.get('@request.all').should('have.length', 1) // all faz a contagem da quantidade de chamadas, espera que tenha 1
   })
+
+  // testa - não fazer submit se tivermos com o formulário inválido (com password em branco)
+  it('Should not call submit if form is invalid', () => {
+    cy.route({
+      method: 'POST',
+      url: /login/,
+      status: 200,
+      response: {
+        accessToken: faker.random.uuid()
+      }
+    }).as('request')
+    cy.getByTestId('email').focus().type(faker.internet.email()).type('{enter}')
+    cy.get('@request.all').should('have.length', 0)
+  })
 })
