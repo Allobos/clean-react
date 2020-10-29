@@ -10,44 +10,44 @@ describe('Login', () => {
   })
   // testa caso inicial - testa o estado inicial da tela de Login
   it('Should load with correct initial state', () => {
-    cy.getByTestId('email').should('have.attr', 'readOnly') // testa se o input do email está readonly
-    cy.getByTestId('email-status')
-      .should('have.attr', 'title', 'Campo obrigatório') // pega qualquer elemento que tenha o atributo data-testid com o valor email-status
-      .should('contain.text', '🔴')
+    cy.getByTestId('email-wrap').should('have.attr', 'data-status', 'invalid') // testa se o atributo data-status tem o valor 'invalid'
+    cy.getByTestId('email')
+      .should('have.attr', 'title', 'Campo obrigatório') // espera que o atributo title tenha valor de 'Campo obrigatório'
+      .should('have.attr', 'readOnly') // espera que tenha o atributo readOnly
+    cy.getByTestId('email-label').should('have.attr', 'title', 'Campo obrigatório') // pega qualquer elemento que tenha o atributo data-testid com o valor email-status e verifica se o atributo title deste elemento tem o valor de 'Campo obrigatório'
+    cy.getByTestId('password-wrap').should('have.attr', 'data-status', 'invalid')
     cy.getByTestId('password').should('have.attr', 'readOnly')
-    cy.getByTestId('password-status')
-      .should('have.attr', 'title', 'Campo obrigatório')
-      .should('contain.text', '🔴')
-    cy.getByTestId('submit').should('have.attr', 'disabled')
+    cy.getByTestId('password-label').should('have.attr', 'title', 'Campo obrigatório')
+    cy.getByTestId('submit').should('have.attr', 'disabled') // espera que o elemento 'submit' tenha o atributo 'disabled'
     cy.getByTestId('error-wrap').should('not.have.descendants') // não tem elemento filho
   })
 
-  // testa caso de erro - testa os campos com valores inválidos
+  // testa caso de erro - testa os campos inserindo valores inválidos
   it('Should present error state if form is invalid', () => {
-    cy.getByTestId('email').focus().type(faker.random.word()) // se eu digitar um email inválido
-    cy.getByTestId('email-status')
-      .should('have.attr', 'title', 'Valor inválido') // espero que o status seja 'Valor inválido'...
-      .should('contain.text', '🔴') // ...com a bolinha vermelha
-    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(3)) // de 5 caracteres para cima é válido
-    cy.getByTestId('password-status')
-      .should('have.attr', 'title', 'Valor inválido')
-      .should('contain.text', '🔴')
+    cy.getByTestId('email').focus().type(faker.random.word()) // insere um email inválido
+    cy.getByTestId('email-wrap').should('have.attr', 'data-status', 'invalid')
+    cy.getByTestId('email').should('have.attr', 'title', 'Valor inválido') // espero que o atributo title tenha o valor: 'Valor inválido'
+    cy.getByTestId('email-label').should('have.attr', 'title', 'Valor inválido')
+    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(3)) // insere um password inválido (de 5 caracteres para cima é válido)
+    cy.getByTestId('password-wrap').should('have.attr', 'data-status', 'invalid')
+    cy.getByTestId('password').should('have.attr', 'title', 'Valor inválido')
+    cy.getByTestId('password-label').should('have.attr', 'title', 'Valor inválido')
     cy.getByTestId('submit').should('have.attr', 'disabled') // espero que o botão esteja desabilitado
     cy.getByTestId('error-wrap').should('not.have.descendants') // espero que não tenha elemento filho, ou seja não mostra o loading e nem mensagem de erro
   })
 
   // testa caso de sucesso - campos com valores corretos
   it('Should present valid state if form is valid', () => {
-    cy.getByTestId('email').focus().type(faker.internet.email()) // se eu digitar um email correto
-    cy.getByTestId('email-status')
-      .should('have.attr', 'title', 'Tudo certo!') // espero que o status dele fique 'Tudo certo!'
-      .should('contain.text', '🟢')
-    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
-    cy.getByTestId('password-status')
-      .should('have.attr', 'title', 'Tudo certo!')
-      .should('contain.text', '🟢')
-    cy.getByTestId('submit').should('not.have.attr', 'disabled') // o botão (submit) não pode mais ter o atributo disabled
-    cy.getByTestId('error-wrap').should('not.have.descendants') // não é para mostrar loading, só alteramos os campos mas ainda não demos submit
+    cy.getByTestId('email').focus().type(faker.internet.email()) // insere um email válido
+    cy.getByTestId('email-wrap').should('have.attr', 'data-status', 'valid')
+    cy.getByTestId('email').should('not.have.attr', 'title') // espera que não tenha o atributo title
+    cy.getByTestId('email-label').should('not.have.attr', 'title')
+    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5)) // insere um password válido (com 5 caracteres)
+    cy.getByTestId('password-wrap').should('have.attr', 'data-status', 'valid')
+    cy.getByTestId('password').should('not.have.attr', 'title')
+    cy.getByTestId('password-label').should('not.have.attr', 'title')
+    cy.getByTestId('submit').should('not.have.attr', 'disabled') // espera que o botão (submit) não tenha o atributo 'disabled'
+    cy.getByTestId('error-wrap').should('not.have.descendants') // espera que qualquer elemento que tenha o atributo data-testid="error-wrap" não tenha elementos filhos - não é para mostrar loading, só alteramos os campos mas não demos submit
   })
 
   // testa credenciais inválidas

@@ -3,7 +3,7 @@ import React, { useContext, useRef } from 'react'
 import Styles from './input-styles.scss'
 import Context from '@/presentation/contexts/form/form-context'
 
-// Props guarda as propriedades do <input type="email"> que está comentado dentro do return mais abaixo
+// Props guarda as propriedades do <input> que está dentro do return
 type Props = React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
 
 const Input: React.FC<Props> = (props: Props) => {
@@ -12,31 +12,28 @@ const Input: React.FC<Props> = (props: Props) => {
   const error = state[`${props.name}Error`]
 
   return (
-    <div className={Styles.inputWrap}>
-      {/* <input type="email" name="email" placeholder="Digite seu e-mail" /> */}
-      {/*
-          Para rodar o Hackzinho, precisa colocar o input como readOnly e
-          e atribuir o hackzinho no onFocus do input
-      */}
+    <div
+      data-testid={`${props.name}-wrap`}
+      className={Styles.inputWrap}
+      data-status={error ? 'invalid' : 'valid'}
+    >
       <input
         {...props}
         ref={inputRef}
+        title={error}
         placeholder=" "
         data-testid={props.name}
-        readOnly
+        readOnly // para rodar o hackzinho, presica colocar o input como readOnly e atribuir o hackzinho no onFocus do input
         onFocus={e => { e.target.readOnly = false }} // Hackzinho para bloquear o autocomplete do Chrome capturando o evento do onFocus do input
         onChange={ e => { setState({ ...state, [e.target.name]: e.target.value }) }}
       />
-      <label onClick={() => { inputRef.current.focus() }}>
+      <label
+        data-testid={`${props.name}-label`}
+        onClick={() => { inputRef.current.focus() }}
+        title={error}
+      >
         {props.placeholder}
       </label>
-      <span
-        data-testid={`${props.name}-status`}
-        title={error || 'Tudo certo!'} // SE tem error mostra 'Tudo certo!
-        className={Styles.status}
-      >
-        {error ? '🔴' : '🟢' /* SE tem error mostra a bolinha vermelha SENÃO mostra a bolinha verde */}
-      </span>
     </div>
   )
 }
