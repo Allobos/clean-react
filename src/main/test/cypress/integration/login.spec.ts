@@ -69,6 +69,24 @@ describe('Login', () => {
     cy.url().should('eq', `${baseUrl}/login`) // se der erro, espero que não mude (seja equal - igual - ao baseUrl) a URL
   })
 
+  // testa falhas nas requests (códigos 400, 404 e 500)
+  it('Should present UnexpectedError on default error cases', () => {
+    cy.route({
+      method: 'POST',
+      url: /login/,
+      status: faker.helpers.randomize([400, 404, 500]),
+      response: {
+        error: faker.random.words() // resposta de erro aleatória mockada
+      }
+    })
+    cy.getByTestId('email').focus().type(faker.internet.email()) // se eu digitar um email
+    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
+    cy.getByTestId('submit').click() // ao clicar no botão...
+    cy.getByTestId('spinner').should('not.exist') // espero não ter spinner
+    cy.getByTestId('main-error').should('contain.text', 'Algo de errado aconteceu. Tente novamente em breve.') // ...e espero que o main-error tenha esteja preenchido com o texto 'Algo de errado aconteceu. Tente novamente em breve'
+    cy.url().should('eq', `${baseUrl}/login`) // ...e espero que a URL não mude
+  })
+
   // caso de sucesso (200) com accessToken no localStorage
   it('Should present save accessToken if valid credentials are provided', () => {
     cy.route({
