@@ -125,4 +125,20 @@ describe('Login', () => {
     cy.url().should('eq', `${baseUrl}/`) // vai mudar de URL
     cy.window().then(window => assert.isOk(window.localStorage.getItem('accessToken'))) // testa que tem que ter um acessToken setado no localStorage
   })
+
+  // testa que se clicar várias vezes no botão, ele não possa submeter o formulário várias vezes
+  it('Should prevent multiple submits', () => {
+    cy.route({
+      method: 'POST',
+      url: /login/,
+      status: 200,
+      response: {
+        accessToken: faker.random.uuid()
+      }
+    }).as('request') // apelida de request
+    cy.getByTestId('email').focus().type(faker.internet.email())
+    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
+    cy.getByTestId('submit').dblclick() // clique duplo (double) no botão
+    cy.get('@request.all').should('have.length', 1) // all faz a contagem da quantidade de chamadas, espera que tenha 1
+  })
 })
