@@ -115,8 +115,10 @@ describe('Login', () => {
         accessToken: faker.random.uuid()
       }
     })
-    cy.getByTestId('email').focus().type('mango@gmail.com') // valor marretado usando a API
-    cy.getByTestId('password').focus().type('12345')
+    cy.getByTestId('email').focus().type(faker.internet.email()) // valor aleatório usando o server local do cypress - basta que seja um email válido e uma senha com 5 caracteres
+    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
+    // cy.getByTestId('email').focus().type('mango@gmail.com') // valor marretado usando a API
+    // cy.getByTestId('password').focus().type('12345')
     cy.getByTestId('submit').click()
     cy.getByTestId('main-error').should('not.exist')
     cy.getByTestId('spinner').should('not.exist')
