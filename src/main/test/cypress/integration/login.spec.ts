@@ -98,8 +98,7 @@ describe('Login', () => {
       }
     })
     cy.getByTestId('email').focus().type(faker.internet.email()) // se eu digitar um email correto
-    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
-    cy.getByTestId('submit').click() // ao clicar no botão...
+    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5)).type('{enter}') // type('{enter}) faz o Enter do teclado
     cy.getByTestId('spinner').should('not.exist') // spinner não deve aparecer
     cy.getByTestId('main-error').should('contain.text', 'Algo de errado aconteceu. Tente novamente em breve') // ... e que o main-erro tenha esteja preenchido com o texto 'Algo de errado aconteceu. Tente novamente em breve'
     cy.url().should('eq', `${baseUrl}/login`) // deve continuar na mesma tela
