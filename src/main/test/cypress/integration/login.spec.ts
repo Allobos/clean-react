@@ -72,6 +72,7 @@ describe('Login', () => {
     simulateValidSubmit()
     // cy.getByTestId('email').focus().type('mango@gmail.com') // valor marretado usando a API
     // cy.getByTestId('password').focus().type('12345')
+    cy.getByTestId('error-wrap').should('not.have.descendants')
     FormHelper.testUrl('/')
     FormHelper.testLocalStorageItem('accessToken') // testa que tem que ter um acessToken setado no localStorage
   })
