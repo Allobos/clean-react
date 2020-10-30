@@ -2,9 +2,13 @@ import * as FormHelper from '../support/form-helper'
 import * as Http from '../support/login-mocks'
 import faker from 'faker'
 
-const simulateValidSubmit = (): void => {
+const populateFields = (): void => {
   cy.getByTestId('email').focus().type(faker.internet.email()) // insere um email válido
   cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5)) // insere um password válido (com 5 caracteres)
+}
+
+const simulateValidSubmit = (): void => {
+  populateFields()
   cy.getByTestId('submit').click() // faz o clique do mouse (botão esquerdo) no botão (submit) que submete o formulário
 }
 
@@ -80,8 +84,7 @@ describe('Login', () => {
   // testa que se clicar várias vezes no botão, ele não possa submeter o formulário várias vezes
   it('Should prevent multiple submits', () => {
     Http.mockOk()
-    cy.getByTestId('email').focus().type(faker.internet.email())
-    cy.getByTestId('password').focus().type(faker.random.alphaNumeric(5))
+    populateFields()
     cy.getByTestId('submit').dblclick() // clique duplo (double) no botão
     FormHelper.testHttpCallsCount(1)
   })
